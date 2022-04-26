@@ -1,4 +1,4 @@
-from flask import Flask, current_app, g, render_template, request, url_for
+from flask import Flask, current_app, g, redirect, render_template, request, url_for
 
 # Flaskクラスをインスタンス化する
 app = Flask(__name__)
@@ -22,22 +22,23 @@ def show_name(name):
     return render_template("index.html", name=name)
 
 
-with app.test_request_context():
-    # /
-    print(url_for("index"))
-    # /hello/world
-    print(url_for("hello-endpoint", name="world"))
-    # /name/ichiro?page=1
-    print(url_for("show_name", name="ichiro", page="1"))
+# 問い合わせフォーム
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
 
-with app.test_request_context("/users?updated=true"):
-    # trueが出力される
-    print(request.args.get("updated"))
 
-ctx = app.app_context()
-ctx.push()
+# 問い合わせ完了フォーム
+@app.route("/contact/complete", methods=["GET", "POST"])
+def contact_complete():
+    if request.method == "POST":
+        if request.method == "POST":
+            # form属性を使ってフォームの値を取得する
+            user_name = request.form["username"]
+            email = request.form["email"]
+            description = request.form["description"]
+            # メールを送る
 
-print(current_app.name)
+            return redirect(url_for("contact_complete"))
 
-g.connection = "connection"
-print(g.connection)
+    return render_template("contact_complete.html")
