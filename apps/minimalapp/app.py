@@ -3,7 +3,7 @@ import os
 
 from email_validator import EmailNotValidError, validate_email
 from flask import render_template  # current_app,; g,
-from flask import Flask, flash, redirect, request, url_for
+from flask import Flask, flash, make_response, redirect, request, session, url_for
 from flask_debugtoolbar import DebugToolbarExtension
 from flask_mail import Mail, Message
 
@@ -40,7 +40,16 @@ def show_name(name):
 # 問い合わせフォーム
 @app.route("/contact")
 def contact():
-    return render_template("contact.html")
+    # レスポンスオブジェクトを取得する
+    response = make_response(render_template("contact.html"))
+
+    # クッキーを設定する
+    response.set_cookie("flaskbook key", "flaskbook value")
+
+    # セッションを設定する
+    session["username"] = "ichiro"
+
+    return response
 
 
 # 問い合わせ完了フォーム
