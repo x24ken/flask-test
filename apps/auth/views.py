@@ -49,7 +49,7 @@ def login():
     form = LoginForm()
     if form.validate_on_submit():
         # メールアドレスからユーザーを取得する
-        user = User.query.filter_by(email=form.email).first()
+        user = User.query.filter_by(email=form.email.data).first()
 
         # ユーザーが存在しパスワードが一致する場合はログイン許可する
         if user is not None and user.verify_password(form.password.data):
