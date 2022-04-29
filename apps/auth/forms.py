@@ -26,3 +26,19 @@ class SignUpForm(FlaskForm):
 
     # ユーザーフォームsubmitの文言を設定する
     submit = SubmitField("新規登録")
+
+
+class LoginForm(FlaskForm):
+    # ユーザーフォームemail属性のラベルとバリデータを設定する
+    email = StringField(
+        "メールアドレス",
+        validators=[
+            DataRequired(message="メールアドレスは必須です。 "),
+            Email(message="メールアドレスの形式で入力してください。 "),
+        ],
+    )
+    # ユーザーフォームpassword属性のラベルとバリデータを設定する
+    password = PasswordField("パスワード", validators=[DataRequired(message="パスワードは必須です。 ")])
+
+    # ユーザーフォームsubmitの文言を設定する
+    submit = SubmitField("ログイン")
