@@ -28,7 +28,7 @@ def signup():
         # メールアドレス重複チェックする
         if user.is_duplicate_email():
             flash("指定のメールアドレスは登録済みです")
-            return redirect('url_for("auth.signup"))')
+            return redirect(url_for("auth.signup"))
 
         # ユーザー情報を登録する
         db.session.add(user)
@@ -38,7 +38,7 @@ def signup():
         # GETパラメータにnextキーが存在し、値がない場合はユーザーの一覧ページへリダイレクトする
         next_ = request.args.get("next")
         if next_ is None or next_.startswith("/"):
-            next_ = url_for("crud.users")
+            next_ = url_for("detector.index")
         return redirect(next_)
 
     return render_template("auth/signup.html", form=form)
@@ -53,8 +53,9 @@ def login():
 
         # ユーザーが存在しパスワードが一致する場合はログイン許可する
         if user is not None and user.verify_password(form.password.data):
+            # ユーザー情報をセッションに書き込む
             login_user(user)
-            return redirect(url_for("crud.users"))
+            return redirect(url_for("detector.index"))
 
         # ログイン失敗メッセージを設定する
         flash("メールアドレスかパスワードが不正です。")
