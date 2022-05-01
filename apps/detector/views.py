@@ -1,6 +1,8 @@
+import random
 import uuid
 from pathlib import Path
 
+import cv2
 from apps.app import db
 from apps.crud.models import User
 from apps.detector.forms import UploadImageForm
@@ -61,3 +63,22 @@ def upload_image():
 
         return redirect(url_for("detector.index"))
     return render_template("detector/upload.html", form=form)
+
+
+def make_color(labels):
+    # 枠線の色をランダムに決定(RGPの値を３つランダムに決めている)
+    colors = [[random.randint(0, 255) for _ in range(3)] for _ in labels]
+    color = random.choice(colors)
+    return color
+
+
+def make_line(result_image):
+    # 枠線を作製
+    line = round(0.0002 * max(result_image.shape[0:2])) + 1
+    return line
+
+
+def draw_lines(c1, c2, result_image, line, color):
+    # 四角形の枠線を画像に追記
+    cv2.rectangle(result_image, c1, c2, color, thickness=line)
+    return cv2

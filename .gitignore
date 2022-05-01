@@ -163,3 +163,4 @@ cython_debug/
 .vscode/
 .venv/
 apps/images/
+apps/detector/model.pt
