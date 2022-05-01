@@ -10,7 +10,11 @@
         <div class="dt-image-username">{{ user_image.username }}</div>
     </header>
     <section>
-        <img src="{{ url_for('detector.image_file', filename=user_image.UserImage.image_path) }}" alt="アップロード画像"/>
+        <img 
+        src="{{ url_for('detector.image_file', filename=user_image.UserImage.image_path) }}" 
+        alt="アップロード画像"
+        class="img-fluid"
+        />
     </section>
 </div>
 {% endfor %}
