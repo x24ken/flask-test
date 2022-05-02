@@ -188,7 +188,10 @@ def exec_detect(target_image_path):
         Path(current_app.config["UPLOAD_FOLDER"], detected_image_file_name)
     )
     if tags == []:
-        return tags, "Notfound.jpg"
+        gray_img = image.convert("L")
+        gray_img.save(detected_image_file_path, quality=90)
+        tags.append("NotFound")
+        return tags, detected_image_file_name
     else:
         # 変換後の画像ファイルを保存先へコピーする
         cv2.imwrite(
