@@ -18,7 +18,7 @@
 </div>
 <!-- 画像一覧を表示する -->
 {% for user_image in user_images %}
-    <div class="card col-md-7 dt-image-content">
+<div class="card col-md-7 dt-image-content">
     <header class="d-flex justify-content-between">
         <div class="dt-image-username">{{ user_image.User.username }}</div>
         <!-- 物体検知フォームを追加する -->
@@ -51,7 +51,7 @@
     <!-- タグ情報を表示する -->
     <footer>
         {% for tag in user_image_tag_dict[user_image.UserImage.id] %}
-            #{{tag.tag_name }}
+        #{{tag.tag_name }}
         {% endfor %}
     </footer>
 </div>
