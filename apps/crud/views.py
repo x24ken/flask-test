@@ -4,33 +4,17 @@ from apps.crud.models import User
 from flask import Blueprint, redirect, render_template, url_for
 from flask_login import login_required
 
-# Blueprintでcrudアプリを作成する
-crud = Blueprint("crud", __name__, template_folder="templates", static_folder="static")
-
-
-@crud.route("/users/new", methods=["GET", "POST"])
-def create_user():
-    # UserFormをインスタンス化する
-    form = UserForm()
-    # フォームの値をバリデートする
-    if form.validate_on_submit():
-        # ユーザーを作成する
-        user = User(
-            username=form.username.data,
-            email=form.email.data,
-            password=form.password.data,
-        )
-        # ユーザーを追加してコミットする
-        db.session.add(user)
-        db.session.commit()
-        # ユーザーの画面へリダイレクトする
-        return redirect(url_for("crud.users"))
-    return render_template("crud/create.html", form=form)
+# Blueprintでcrudアプリを生成する
+crud = Blueprint(
+    "crud",
+    __name__,
+    template_folder="templates",
+    static_folder="static",
+)
 
 
 # indexエンドポイントを作成しindex.htmlを返す
 @crud.route("/")
-# デコレーターを追加（ログインしないとアクセスできなくなる)
 @login_required
 def index():
     return render_template("crud/index.html")
@@ -43,10 +27,34 @@ def sql():
     return "コンソールログを確認してください"
 
 
+@crud.route("/users/new", methods=["GET", "POST"])
+@login_required
+def create_user():
+    # UserFormをインスタンス化する
+    form = UserForm()
+
+    # フォームの値をバリデートする
+    if form.validate_on_submit():
+        # ユーザーを作成する
+        user = User(
+            username=form.username.data,
+            email=form.email.data,
+            password=form.password.data,
+        )
+
+        # ユーザーを追加してコミットする
+        db.session.add(user)
+        db.session.commit()
+
+        # ユーザーの一覧画面へリダイレクトする
+        return redirect(url_for("crud.users"))
+    return render_template("crud/create.html", form=form)
+
+
 @crud.route("/users")
 @login_required
 def users():
-    """ユーザの一覧を取得する"""
+    """ユーザーの一覧を取得する"""
     users = User.query.all()
     return render_template("crud/index.html", users=users)
 
@@ -60,7 +68,7 @@ def edit_user(user_id):
     # Userモデルを利用してユーザーを取得する
     user = User.query.filter_by(id=user_id).first()
 
-    # formからサブミットさっれた場合はユーザーを更新しユーザーの一覧画面へリダイレクトする
+    # formからサブミットされた場合はユーザーを更新しユーザーの一覧画面へリダイレクトする
     if form.validate_on_submit():
         user.username = form.username.data
         user.email = form.email.data
