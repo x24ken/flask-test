@@ -8,7 +8,9 @@ import torch
 import torchvision
 from apps.app import db
 from apps.crud.models import User
-from apps.detector.forms import DetectorForm, UploadImageForm
+
+# UploadImageFormをimportする
+from apps.detector.forms import DeleteForm, DetectorForm, UploadImageForm
 from apps.detector.models import UserImage, UserImageTag
 from flask import (
     Blueprint,
@@ -19,6 +21,8 @@ from flask import (
     send_from_directory,
     url_for,
 )
+
+# login_required, current_userをimportする
 from flask_login import current_user, login_required
 from PIL import Image
 from sqlalchemy.exc import SQLAlchemyError
@@ -51,6 +55,8 @@ def index():
 
         # 物体検知フォームをインスタンス化する
         detector_form = DetectorForm()
+        # DeleteFormをインスタンス化する
+        delete_form = DeleteForm()
 
         return render_template(
             "detector/index.html",
@@ -59,6 +65,8 @@ def index():
             user_image_tag_dict=user_image_tag_dict,
             # 物体検知フォームをテンプレートに渡す
             detector_form=detector_form,
+            # 画像削除フォームをテンプレートに渡す
+            delete_form=delete_form,
         )
     return render_template("detector/index.html", user_images=user_images)
 
@@ -221,4 +229,26 @@ def detect(image_id):
         # エラーログ出力
         current_app.logger.error(e)
         return redirect(url_for("detector.index"))
+    return redirect(url_for("detector.index"))
+
+
+@dt.route("/images/delete/<string:image_id>", methods=["POST"])
+@login_required
+def delete_image(image_id):
+    try:
+        # user_image_tagsテーブルからレコードを削除する
+        db.session.query(UserImageTag).filter(
+            UserImageTag.user_image_id == image_id
+        ).delete()
+
+        # user_imagesテーブルからレコードを削除する
+        db.session.query(UserImage).filter(UserImage.id == image_id).delte()
+
+        db.session.commit()
+    except SQLAlchemyError as e:
+        flash("画像削除でエラーが発生しました。 ")
+        # エラーログ出力
+        current_app.logger.error(e)
+        db.session.rollback()
+
     return redirect(url_for("detector.index"))
