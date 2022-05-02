@@ -58,17 +58,16 @@ def index():
         # DeleteFormをインスタンス化する
         delete_form = DeleteForm()
 
-        return render_template(
-            "detector/index.html",
-            user_images=user_images,
-            # タグ一覧をテンプレートに渡す
-            user_image_tag_dict=user_image_tag_dict,
-            # 物体検知フォームをテンプレートに渡す
-            detector_form=detector_form,
-            # 画像削除フォームをテンプレートに渡す
-            delete_form=delete_form,
-        )
-    return render_template("detector/index.html", user_images=user_images)
+    return render_template(
+        "detector/index.html",
+        user_images=user_images,
+        # タグ一覧をテンプレートに渡す
+        user_image_tag_dict=user_image_tag_dict,
+        # 物体検知フォームをテンプレートに渡す
+        detector_form=detector_form,
+        # 画像削除フォームをテンプレートに渡す
+        delete_form=delete_form,
+    )
 
 
 @dt.route("/images/<path:filename>")
