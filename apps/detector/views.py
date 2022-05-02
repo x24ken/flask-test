@@ -242,7 +242,7 @@ def delete_image(image_id):
         ).delete()
 
         # user_imagesテーブルからレコードを削除する
-        db.session.query(UserImage).filter(UserImage.id == image_id).delte()
+        db.session.query(UserImage).filter(UserImage.id == image_id).delete()
 
         db.session.commit()
     except SQLAlchemyError as e:
