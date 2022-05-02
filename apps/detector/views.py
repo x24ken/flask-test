@@ -18,6 +18,7 @@ from flask import (
     flash,
     redirect,
     render_template,
+    request,
     send_from_directory,
     url_for,
 )
@@ -73,6 +74,62 @@ def index():
 @dt.route("/images/<path:filename>")
 def image_file(filename):
     return send_from_directory(current_app.config["UPLOAD_FOLDER"], filename)
+
+
+@dt.route("/images/search", methods=["GET"])
+def search():
+    # 画像一覧を取得する
+    user_images = db.session.query(User, UserImage).join(
+        UserImage, User.id == UserImage.user_id
+    )
+
+    # GETパラメーターから検索ワードを取得する
+    search_text = request.args.get("search")
+    user_image_tag_dict = {}
+    filtered_user_images = []
+
+    # user_imagesをループしuser_imagesに紐づくタグ情報を検索する
+    for user_image in user_images:
+        if not search_text:
+            user_image_tags = (
+                db.session.query(UserImageTag)
+                .filter(UserImageTag.user_image_id == user_image.UserImage.id)
+                .all()
+            )
+        else:
+            # 検索ワードで絞り込んだタグを取得する
+            user_image_tags = (
+                db.session.query(UserImageTag)
+                .filter(UserImageTag.user_image_id == user_image.UserImage.id)
+                .filter(UserImageTag.tag_name.like("%" + search_text + "%"))
+                .all()
+            )
+
+            # タグが見つからなかったら画像を返さない
+            if not user_image_tags:
+                continue
+
+            user_image_tags = (
+                db.session.query(UserImageTag)
+                .filter(UserImageTag.user_image_id == user_image.UserImage.id)
+                .all()
+            )
+
+            # user_image_idをキーとする辞書にタグ情報をセットする
+            filtered_user_images.append(user_image)
+
+    delete_form = DeleteForm()
+    detector_form = DetectorForm()
+
+    return render_template(
+        "detector/index.html",
+        # 絞り込んだuser_images配列を渡す
+        user_images=filtered_user_images,
+        # 画像に紐づくタグ一覧の辞書に渡す
+        user_image_tag_dict=user_image_tag_dict,
+        delete_form=delete_form,
+        detector_form=detector_form,
+    )
 
 
 @dt.route("/upload", methods=["GET", "POST"])
