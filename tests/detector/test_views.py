@@ -60,7 +60,7 @@ def upload_image(client, image_path):
 def test_upload_signup_post_validate(client):
     signup(client, "admin", "flaskbook@example.com", "password")
     rv = upload_image(client, "detector/testdata/test_invalid_file.txt")
-    assert "サポートされていない画像形式です。" in rv.data.decode()
+    assert "サポートされていない形式です。" in rv.data.decode()
 
 
 def test_upload_signup_post(client):
