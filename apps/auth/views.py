@@ -61,7 +61,7 @@ def login():
             return redirect(url_for("detector.index"))
 
         # ログイン失敗メッセージを設定する
-        flash("メールアドレスかパスワードか不正です。")
+        flash("メールアドレスかパスワードか不正です")
     return render_template("auth/login.html", form=form)
 
 
