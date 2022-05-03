@@ -8,7 +8,7 @@
         <header>ユーザー新規登録</header>
         <section>
             <form method="post" action="{{ url_for('auth.signup', next=request.args.get('next')) }}"
-            class="form-signin">
+                class="form-signin">
                 {{ form.csrf_token }}
                 {% for message in get_flashed_messages() %}
                 <div class="dt-auth-flash">{{ message }}</div>
