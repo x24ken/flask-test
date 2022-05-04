@@ -31,7 +31,6 @@ def test_upload_no_auth(client):
     # 画像アップロード画面にはアクセスできない
     assert "アップロード" not in rv.data.decode()
     # ログイン画面へリダイレクトされる
-    assert "メールアドレス" in rv.data.decode()
     assert "パスワード" in rv.data.decode()
 
 
