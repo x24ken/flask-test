@@ -167,3 +167,4 @@ apps/detector/model.pt
 migrations/
 local.sqlite
 testing.sqlite
+Dockerfile
