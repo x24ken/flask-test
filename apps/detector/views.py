@@ -25,6 +25,7 @@ from flask import (
 
 # login_required, current_userをimportする
 from flask_login import current_user, login_required
+from flask_paginate import Pagination, get_page_parameter
 from PIL import Image
 
 # template_folderを指定する（staticは指定しない）
@@ -41,6 +42,8 @@ def index():
         .filter(User.id == UserImage.user_id)
         .all()
     )
+
+    user_images, pagination = userimages_to_pagination(user_images)
 
     # タグ一覧を取得する
     user_image_tag_dict = {}
@@ -67,6 +70,8 @@ def index():
         detector_form=detector_form,
         # 画像削除フォームをテンプレートに渡す
         delete_form=delete_form,
+        # ページ
+        pagination=pagination,
     )
 
 
@@ -314,14 +319,18 @@ def search():
     delete_form = DeleteForm()
     detector_form = DetectorForm()
 
+    # ページネーション
+    user_images, pagination = userimages_to_pagination(filtered_user_images)
+
     return render_template(
         "detector/index.html",
         # 絞り込んだuser_images配列を渡す
-        user_images=filtered_user_images,
+        user_images=user_images,
         # 画像に紐づくタグ一覧の辞書を渡す
         user_image_tag_dict=user_image_tag_dict,
         delete_form=delete_form,
         detector_form=detector_form,
+        pagination=pagination,
     )
 
 
@@ -333,3 +342,12 @@ def page_not_found(e):
 def none_tag(image):
     cv2.imread(image)
     return cv2
+
+
+def userimages_to_pagination(user_images):
+    """ユーザーイメージとページネーションの２つを返します"""
+    max_image_number = len(user_images)
+    page = request.args.get(get_page_parameter(), type=int, default=1)
+    user_images = user_images[(page - 1) * 5 : page * 5]  # noqa: errors
+    pagination = Pagination(page=page, total=max_image_number, per_page=5)
+    return user_images, pagination
