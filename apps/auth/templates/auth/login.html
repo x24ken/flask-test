@@ -12,7 +12,7 @@
                 <span class="dt-auth-flash">{{ message }}</span>
                 {% endfor %}
                 {{ form.csrf_token }}
-                {{ form.username(class="form-control dt-auth-input",placeholder="名前") }}
+                {{ form.username(class="form-control dt-auth-input",placeholder="ユーザー名") }}
                 {{ form.password(class="form-control dt-auth-input",placeholder="パスワード") }}
                 {{ form.submit(class="btn btn-md btn-primary btn-block dt-auth-btn") }}
             </form>
