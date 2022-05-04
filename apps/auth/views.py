@@ -25,6 +25,11 @@ def signup():
             password=form.password.data,
         )
 
+        # 名前の重複をチェックする
+        if user.is_duplicate_username():
+            flash("その名前は登録されています")
+            return redirect(url_for("auth.signup"))
+
         # ユーザー情報を登録する
         db.session.add(user)
         db.session.commit()

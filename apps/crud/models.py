@@ -33,6 +33,11 @@ class User(db.Model, UserMixin):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
+    # ユーザーネーム重複をチェックする
+    def is_duplicate_username(self):
+        """名前が重複してるならTrueを返す"""
+        return User.query.filter_by(username=self.username).first() is not None
+
 
 # ログインしているユーザー情報を取得する関数を作成する
 @login_manager.user_loader
