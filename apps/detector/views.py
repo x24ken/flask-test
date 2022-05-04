@@ -27,6 +27,7 @@ from flask import (
 from flask_login import current_user, login_required
 from flask_paginate import Pagination, get_page_parameter
 from PIL import Image
+from sqlalchemy import desc
 
 # template_folderを指定する（staticは指定しない）
 dt = Blueprint("detector", __name__, template_folder="templates")
@@ -40,6 +41,7 @@ def index():
         db.session.query(User, UserImage)
         .join(UserImage)
         .filter(User.id == UserImage.user_id)
+        .order_by(desc(UserImage.created_at))
         .all()
     )
 
