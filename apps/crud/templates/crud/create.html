@@ -12,12 +12,6 @@
 <span style="color: red;">{{ error }}</span>
 {% endfor %}
 <p>
-    {{ form.email.label }} {{ form.email(placeholder="メールアドレス") }}
-</p>
-{% for error in form.email.errors %}
-<span style="color: red;">{{ error }}</span>
-{% endfor %}
-<p>
     {{ form.password.label }} {{ form.password(placeholder="パスワード") }}
 </p>
 {% for error in form.password.errors %}

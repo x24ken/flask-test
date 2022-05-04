@@ -38,7 +38,6 @@ def create_user():
         # ユーザーを作成する
         user = User(
             username=form.username.data,
-            email=form.email.data,
             password=form.password.data,
         )
 
@@ -71,7 +70,6 @@ def edit_user(user_id):
     # formからサブミットされた場合はユーザーを更新しユーザーの一覧画面へリダイレクトする
     if form.validate_on_submit():
         user.username = form.username.data
-        user.email = form.email.data
         user.password = form.password.data
         db.session.add(user)
         db.session.commit()

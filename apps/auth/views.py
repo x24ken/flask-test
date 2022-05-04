@@ -22,14 +22,8 @@ def signup():
     if form.validate_on_submit():
         user = User(
             username=form.username.data,
-            email=form.email.data,
             password=form.password.data,
         )
-
-        # メールアドレス重複チェックをする
-        if user.is_duplicate_email():
-            flash("指定のメールアドレスは登録済みです")
-            return redirect(url_for("auth.signup"))
 
         # ユーザー情報を登録する
         db.session.add(user)
@@ -53,7 +47,7 @@ def login():
 
     if form.validate_on_submit():
         # メールアドレスからユーザーを取得する
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(username=form.username.data).first()
 
         # ユーザーが存在しパスワードが一致する場合はログインを許可する
         if user is not None and user.verify_password(form.password.data):
@@ -61,7 +55,7 @@ def login():
             return redirect(url_for("detector.index"))
 
         # ログイン失敗メッセージを設定する
-        flash("メールアドレスかパスワードか不正です")
+        flash("名前かパスワードか不正です")
     return render_template("auth/login.html", form=form)
 
 

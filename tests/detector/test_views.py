@@ -11,15 +11,15 @@ def test_index(client):
     assert "画像新規登録" in rv.data.decode()
 
 
-def signup(client, username, email, password):
+def signup(client, username, password):
     """サインアップする"""
-    data = dict(username=username, email=email, password=password)
+    data = dict(username=username, password=password)
     return client.post("/auth/signup", data=data, follow_redirects=True)
 
 
 def test_index_signup(client):
     """サインアップを実行する"""
-    rv = signup(client, "admin", "flaskbook@example.com", "password")
+    rv = signup(client, "admin", "password")
     assert "admin" in rv.data.decode()
     rv = client.get("/")
     assert "ログアウト" in rv.data.decode()
@@ -36,7 +36,7 @@ def test_upload_no_auth(client):
 
 
 def test_upload_signup_get(client):
-    signup(client, "admin", "flaskbook@example.com", "password")
+    signup(client, "admin", "password")
     rv = client.get("/upload")
     assert "アップロード" in rv.data.decode()
 
@@ -58,20 +58,20 @@ def upload_image(client, image_path):
 
 
 def test_upload_signup_post_validate(client):
-    signup(client, "admin", "flaskbook@example.com", "password")
+    signup(client, "admin", "password")
     rv = upload_image(client, "detector/testdata/test_invalid_file.txt")
     assert "サポートされていない形式です。" in rv.data.decode()
 
 
 def test_upload_signup_post(client):
-    signup(client, "admin", "flaskbook@example.com", "password")
+    signup(client, "admin", "password")
     rv = upload_image(client, "detector/testdata/test_valid_image.jpg")
     user_image = UserImage.query.first()
     assert user_image.image_path in rv.data.decode()
 
 
 def test_detect_no_user_image(client):
-    signup(client, "admin", "flaskbook@example.com", "password")
+    signup(client, "admin", "password")
     upload_image(client, "detector/testdata/test_valid_image.jpg")
     # 存在しないIDを指定する
     rv = client.post("/detect/notexistid", follow_redirects=True)
@@ -80,7 +80,7 @@ def test_detect_no_user_image(client):
 
 def test_detect(client):
     # サインアップする
-    signup(client, "admin", "flaskbook@example.com", "password")
+    signup(client, "admin", "password")
 
     # 画像をアップロードする
     upload_image(client, "detector/testdata/test_valid_image.jpg")
@@ -95,7 +95,7 @@ def test_detect(client):
 
 def test_detect_search(client):
     # サインアップする
-    signup(client, "admin", "flaskbook@example.com", "password")
+    signup(client, "admin", "password")
 
     # 画像をアップロードする
     upload_image(client, "detector/testdata/test_valid_image.jpg")
@@ -124,7 +124,7 @@ def test_detect_search(client):
 
 
 def test_delete(client):
-    signup(client, "admin", "flaskbook@example.com", "password")
+    signup(client, "admin", "password")
     upload_image(client, "detector/testdata/test_valid_image.jpg")
     user_image = UserImage.query.first()
     image_path = user_image.image_path
