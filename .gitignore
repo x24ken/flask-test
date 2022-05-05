@@ -168,3 +168,4 @@ migrations/
 local.sqlite
 testing.sqlite
 Dockerfile
+migrations
